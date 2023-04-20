@@ -1,0 +1,29 @@
+<launch>
+
+<!-- Convert xacro to urdf and load in parameter -->
+<param name="robot_description" command="$(find xacro)/xacro $(find rotary_inverted_pendulum)/urdf/rotary_inverted_pendulum.xacro"/>
+
+<!-- Launch empty Gazebo  -->
+<include file="$(find gazebo_ros)/launch/empty_world.launch">
+  <arg name="paused" value="true"/>
+  <arg name="use_sim_time" value="true"/>
+  <arg name="gui" value="true"/>
+  <arg name="headless" value="false"/>
+  <arg name="debug" value="false"/>
+</include>
+
+<!-- Spwan model in Gazebo -->
+<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model rotary_inverted_pendulum"/>
+
+<!-- Load controller params from .yaml -->
+<rosparam file="$(find rotary_inverted_pendulum)/launch/controller.yaml" command="load"/>
+
+<!-- Load controllers -->
+<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="rotary_inverted_pendulum" args="Rev1_position_controller joint_state_controller "/>
+
+<!-- Load joint state publisher -->
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+  <remap from="/joint_states" to="/rotary_inverted_pendulum/joint_states"/>
+</node>
+
+</launch>

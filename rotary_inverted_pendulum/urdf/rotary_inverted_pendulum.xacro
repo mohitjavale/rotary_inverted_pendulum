@@ -1,0 +1,98 @@
+<?xml version="1.0" ?>
+<robot name="rotary_inverted_pendulum" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find rotary_inverted_pendulum)/urdf/materials.xacro" />
+<xacro:include filename="$(find rotary_inverted_pendulum)/urdf/rotary_inverted_pendulum.trans" />
+<xacro:include filename="$(find rotary_inverted_pendulum)/urdf/rotary_inverted_pendulum.gazebo" />
+
+<link name="world"/>
+
+<link name="base_link">
+  <inertial>
+    <origin xyz="0.0 0.0 0.15000000000000002" rpy="0 0 0"/>
+    <mass value="211.95000000000002"/>
+    <inertia ixx="3.17925" iyy="3.17925" izz="3.17925" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rotary_inverted_pendulum/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rotary_inverted_pendulum/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="rotary_link">
+  <inertial>
+    <origin xyz="0.008013705761337671 -1.6309157073718057e-17 0.030000000000000082" rpy="0 0 0"/>
+    <mass value="8.755245138233084"/>
+    <inertia ixx="0.014223" iyy="0.02615" izz="0.035358" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.0 -0.0 -0.3" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rotary_inverted_pendulum/meshes/rotary_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.0 -0.0 -0.3" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rotary_inverted_pendulum/meshes/rotary_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="pendulum_link">
+  <inertial>
+    <origin xyz="-0.009999999999999926 -3.9119026865169275e-17 0.11180084116382871" rpy="0 0 0"/>
+    <mass value="0.7414385478886268"/>
+    <inertia ixx="0.005227" iyy="0.005213" izz="5.3e-05" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.25 -0.0 -0.33" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rotary_inverted_pendulum/meshes/pendulum_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.25 -0.0 -0.33" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="package://rotary_inverted_pendulum/meshes/pendulum_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="Rev1" type="continuous">
+<!-- <joint name="Rev1" type="revolute"> -->
+  <origin xyz="0.0 0.0 0.3" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="rotary_link"/>
+  <axis xyz="0.0 0.0 1.0"/>
+  <!-- <limit effort="1000000" velocity="10" lower="-1000000" upper="1000000" /> -->
+
+</joint>
+
+<!-- <joint name="Rev2" type="continuous"> -->
+<joint name="Rev2" type="revolute">
+  <origin xyz="0.25 0.0 0.03" rpy="0 0 0"/>
+  <parent link="rotary_link"/>
+  <child link="pendulum_link"/>
+  <axis xyz="1.0 0.0 0.0"/>
+  <dynamics damping="0.01" friction="0.0"/>
+  <limit effort="1000" velocity="1000" lower="-0.75" upper="0.75" />
+</joint>
+
+<joint name="fixed_world" type="fixed">
+  <parent link="world"/>
+  <child link="base_link"/>
+</joint>
+
+</robot>
